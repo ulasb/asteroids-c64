@@ -50,10 +50,7 @@ static const signed char sin_table[24] = {
 
 /* Helper functions */
 static int get_trig_index(int angle) {
-    int idx = angle / 15;
-    while (idx < 0) idx += 24;
-    while (idx >= 24) idx -= 24;
-    return idx;
+    return angle / 15;
 }
 
 /* Initialize a new level */
