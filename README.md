@@ -125,7 +125,7 @@ Other emulators:
 asteroids-c64/
 ├── asteroids.c      # ⚠️ C version - EXISTS but SLOW/UNPLAYABLE
 ├── asteroids.h      # Header file with constants and structures
-├── c64-simple.cfg   # Linker config (unused)
+├── c64-simple.cfg   # Linker config for assembly version (currently unused)
 ├── Makefile         # Build configuration
 ├── README.md        # This file (with honest assessment)
 ├── DESIGN.md        # Design documentation
