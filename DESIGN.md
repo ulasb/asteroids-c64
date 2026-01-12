@@ -100,7 +100,7 @@ asteroids.h
 
 ## Performance Considerations
 
-- Fixed-point math could improve performance (currently using floats)
+- Integer math is used for performance (no floats are currently used)
 - Trigonometry lookup tables (24 values) avoid runtime calculations
 - Simple collision detection (distance-squared checks)
 - Character graphics for fast rendering
