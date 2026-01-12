@@ -22,13 +22,6 @@ c: $(TARGET).prg
 $(TARGET).prg: asteroids.c asteroids.h
 	$(CC) $(CFLAGS) -o $(TARGET).prg asteroids.c
 
-# Assembly version
-asm: $(TARGET)_asm.prg
-
-$(TARGET)_asm.prg: asteroids.s c64-simple.cfg
-	$(AS) $(ASFLAGS) asteroids.s -o asteroids.o
-	$(LD) $(LDFLAGS) -o $(TARGET)_asm.prg asteroids.o
-
 # Clean
 clean:
 	rm -f *.o *.prg
@@ -37,8 +30,4 @@ clean:
 run: $(TARGET).prg
 	x64 $(TARGET).prg
 
-# Run assembly version  
-run-asm: $(TARGET)_asm.prg
-	x64 $(TARGET)_asm.prg
-
-.PHONY: all c asm clean run run-asm
+.PHONY: all c clean run

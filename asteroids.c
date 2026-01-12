@@ -18,6 +18,7 @@ static int level = 1;
 static int lives = 3;
 static int gameover = 0;
 static int invulnerable = 0;
+static int status_dirty = 1;
 
 /* Player state (using character coordinates directly) */
 static int player_x = 20;
@@ -51,6 +52,25 @@ static const signed char sin_table[24] = {
 /* Helper functions */
 static int get_trig_index(int angle) {
     return angle / 15;
+}
+
+/* Fire bullet */
+static void fire_bullet(void) {
+    int i, idx;
+    if (bullet_count < MAX_BULLETS) {
+        for (i = 0; i < MAX_BULLETS; ++i) {
+            if (!bullets[i].active) {
+                bullets[i].active = 1;
+                bullets[i].x = player_x;
+                bullets[i].y = player_y;
+                idx = get_trig_index(player_angle);
+                bullets[i].vx = cos_table[idx] * 2;
+                bullets[i].vy = sin_table[idx] * 2;
+                bullet_count++;
+                break;
+            }
+        }
+    }
 }
 
 /* Initialize a new level */
@@ -114,20 +134,7 @@ static void handle_input(void) {
     }
     
     if (!(joy & 0x10) && last_fire) {
-        if (bullet_count < MAX_BULLETS) {
-            for (i = 0; i < MAX_BULLETS; ++i) {
-                if (!bullets[i].active) {
-                    bullets[i].active = 1;
-                    bullets[i].x = player_x;
-                    bullets[i].y = player_y;
-                    idx = get_trig_index(player_angle);
-                    bullets[i].vx = cos_table[idx] * 2;
-                    bullets[i].vy = sin_table[idx] * 2;
-                    bullet_count++;
-                    break;
-                }
-            }
-        }
+        fire_bullet();
     }
     last_fire = (joy & 0x10);
     
@@ -151,20 +158,7 @@ static void handle_input(void) {
             if (player_vy < -2) player_vy = -2;
         }
         if (c == ' ') {
-            if (bullet_count < MAX_BULLETS) {
-                for (i = 0; i < MAX_BULLETS; ++i) {
-                    if (!bullets[i].active) {
-                        bullets[i].active = 1;
-                        bullets[i].x = player_x;
-                        bullets[i].y = player_y;
-                        idx = get_trig_index(player_angle);
-                        bullets[i].vx = cos_table[idx] * 2;
-                        bullets[i].vy = sin_table[idx] * 2;
-                        bullet_count++;
-                        break;
-                    }
-                }
-            }
+            fire_bullet();
         }
     }
 }
@@ -186,7 +180,7 @@ static void update_physics(void) {
     if (player_y < 2) player_y = 24;
     if (player_y > 24) player_y = 2;
     
-    for (i = 0; i < asteroid_count; ++i) {
+    for (i = 0; i < MAX_ASTEROIDS; ++i) {
         if (asteroids[i].active) {
             asteroids[i].x += asteroids[i].vx;
             asteroids[i].y += asteroids[i].vy;
@@ -264,6 +258,7 @@ static void check_collisions(void) {
                 bullets[b].active = 0;
                 bullet_count--;
                 score += (4 - asteroids[a].size) * 10;
+                status_dirty = 1;
                 
                 if (asteroids[a].size > 0) {
                     split_asteroid(a);
@@ -286,6 +281,7 @@ static void check_collisions(void) {
             
             if (dist2 < threshold) {
                 lives--;
+                status_dirty = 1;
                 if (lives <= 0) {
                     gameover = 1;
                 } else {
@@ -308,8 +304,6 @@ static void draw_screen(void) {
     int i;
     int offset;
     unsigned char *screen_mem;
-    static int status_dirty = 1;
-    
     /* Clear screen buffer */
     for (i = 0; i < 40 * 23; ++i) {
         screen_buffer[i] = 32; /* Space */
@@ -372,6 +366,7 @@ static void check_level_complete(void) {
     
     if (count == 0) {
         level++;
+        status_dirty = 1;
         init_level();
     }
 }
@@ -429,3 +424,4 @@ int main(void) {
     
     return 0;
 }
+/* Fire bullet */
