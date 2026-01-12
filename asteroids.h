@@ -23,8 +23,8 @@ typedef struct {
 
 /* Bullet structure */
 typedef struct {
-    int x, y;  /* Character grid coordinates */
-    int vx, vy; /* Velocity in character units */
+    unsigned char x, y;  /* Character grid coordinates */
+    signed char vx, vy; /* Velocity in character units */
     unsigned char active;
 } Bullet;
 
