@@ -15,9 +15,9 @@
 
 /* Asteroid structure (using character coordinates) */
 typedef struct {
-    int x, y;  /* Character grid coordinates (0-39, 0-24) */
-    int vx, vy; /* Velocity in character units */
-    int size; /* 3=large, 2=medium, 1=small */
+    unsigned char x, y;  /* Character grid coordinates (0-39, 0-24) */
+    signed char vx, vy; /* Velocity in character units */
+    unsigned char size; /* 3=large, 2=medium, 1=small */
     unsigned char active;
 } Asteroid;
 
